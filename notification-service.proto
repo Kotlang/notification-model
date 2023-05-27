@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.kotlang.notification";
+option java_outer_classname = "NotificationService";
+
+option go_package = "github.com/Kotlang/notificationGo/generated";
+
+package notification;
+
+service NotificationService {
+    rpc RegisterDeviceInstance (RegisterDeviceInstanceRequest) returns (RegisterDeviceInstanceResponse) {}
+    rpc RegisterEvent(RegisterEventRequest) returns (RegisterEventResponse) {}
+}
+
+message RegisterDeviceInstanceRequest {
+    string token = 1;
+}
+message RegisterDeviceInstanceResponse {}
+
+message RegisterEventRequest {
+    string eventType = 1;
+
+    // Notification service has templates for each eventType.
+    // Parameters will used to generate notification message.
+    map<string, string> templateParameters = 2;
+
+    // if set to broadcast then all devices will receive notification.
+    bool isBroadcast = 3;
+
+    repeated string targetUsers = 4;
+}
+
+message RegisterEventResponse {}
