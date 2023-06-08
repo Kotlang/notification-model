@@ -9,8 +9,8 @@ option go_package = "github.com/Kotlang/notificationGo/generated";
 package notification;
 
 service NotificationService {
-    rpc RegisterDeviceInstance (RegisterDeviceInstanceRequest) returns (StatusResponse) {}
-    rpc RegisterEvent(RegisterEventRequest) returns (StatusResponse) {}
+    rpc RegisterDeviceInstance (RegisterDeviceInstanceRequest) returns (NotificationStatusResponse) {}
+    rpc RegisterEvent(RegisterEventRequest) returns (NotificationStatusResponse) {}
 }
 
 message RegisterDeviceInstanceRequest {
@@ -30,6 +30,6 @@ message RegisterEventRequest {
     repeated string targetUsers = 4;
 }
 
-message StatusResponse {
+message NotificationStatusResponse {
     string status = 1;
 }
