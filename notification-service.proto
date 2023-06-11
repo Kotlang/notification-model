@@ -11,11 +11,11 @@ package notification;
 service NotificationService {
     rpc RegisterDeviceInstance (RegisterDeviceInstanceRequest) returns (NotificationStatusResponse) {}
     rpc RegisterEvent(RegisterEventRequest) returns (NotificationStatusResponse) {}
-    rpc GetTopics(GetTopicsRequest) returns (TopicsResponse) {}
+    rpc GetFCMTopics(GetFCMTopicsRequest) returns (FCMTopicsResponse) {}
 }
 
-message GetTopicsRequest {}
-message TopicsResponse {
+message GetFCMTopicsRequest {}
+message FCMTopicsResponse {
     repeated string topics = 1;
 }
 
