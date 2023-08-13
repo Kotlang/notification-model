@@ -24,16 +24,21 @@ message RegisterDeviceInstanceRequest {
 }
 
 message RegisterEventRequest {
+    // Event type to register e.g:- post.created, user.created
     string eventType = 1;
 
     // Notification service has templates for each eventType.
     // Parameters will used to generate notification message.
     map<string, string> templateParameters = 2;
 
-    // if set to broadcast then all devices will receive notification.
+    // Topic to send notification to all the topic subscribers
     string topic = 3;
 
+    // Target specific users
     repeated string targetUsers = 4;
+
+    // Ignore specific users
+    repeated string redundantUsers = 5;
 }
 
 message NotificationStatusResponse {
