@@ -25,15 +25,17 @@ message RegisterDeviceInstanceRequest {
 
 message RegisterEventRequest {
     string eventType = 1;
+	string title = 2;
+	string body = 3;
 
     // Notification service has templates for each eventType.
     // Parameters will used to generate notification message.
-    map<string, string> templateParameters = 2;
+    map<string, string> templateParameters = 4;
 
     // if set to broadcast then all devices will receive notification.
-    string topic = 3;
+    string topic = 5;
 
-    repeated string targetUsers = 4;
+    repeated string targetUsers = 6;
 }
 
 message NotificationStatusResponse {
