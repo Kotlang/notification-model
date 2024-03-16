@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.kotlang.notification";
+option java_outer_classname = "MessagingServiceInternal";
+
+option go_package = "github.com/Kotlang/notificationGo/generated/notification";
+
+package notification;
+
+service MessagingService {
+
+  // Sends common message to multiple recipients
+  rpc BroadcastMessage (MesssageRequest) returns (StatusResponse);
+
+  // Supports sending unique messages to multiple recipients
+  rpc SendUniqueMessage (UniqueMessageRequest) returns (StatusResponse);
+
+  // Register a new messaging template, these templates can be used as blueprints for sending messages 
+  // and UI rendering in admin panel
+  rpc RegisterMessagingTemplate (RegisterMessagingTemplateRequest) returns (StatusResponse);
+  rpc GetMessagingTemplateById (IdRequest) returns (MessagingTemplate);
+}
+
+enum MediaType {
+  image = 0;
+  video = 1;
+  audio = 2;
+}
+
+message IdRequest {
+  string id = 1;
+}
+
+message StatusResponse {
+  string status = 1;
+}
+
+message MediaParameters {
+  MediaType mediaType = 1;
+  string link = 2;
+  string filename = 3;
+}
+
+message MessagingTemplate {
+  string templateId = 1;
+  string templateName = 2;
+  MediaParameters mediaParameters = 3;
+  map<string, string> templateParameters = 4;
+}
+
+message RegisterMessagingTemplateRequest {
+  string templateId = 1;
+  string templateName = 2;
+  MediaParameters mediaParameters = 3;
+  map<string, string> templateParameters = 4;
+}
+
+// The UniqueMessageRequest is used to send unique messages to multiple recipients
+// The messages are sent to the recipients in the order they are added to the request
+message UniqueMessageRequest {
+  repeated MesssageRequest messages = 1;
+}
+
+// The templateParameters and mediaParameters are merged into a single map named parameters in backend
+// The templateParameters are variables that are used in the template
+message MesssageRequest {
+  string templateId = 1;
+  map<string, string> templateParameters = 2;
+  MediaParameters mediaParameters = 3;
+  repeated string recipientPhoneNumber = 4;
+}
