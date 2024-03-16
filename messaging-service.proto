@@ -4,21 +4,27 @@ option java_multiple_files = true;
 option java_package = "com.kotlang.notification";
 option java_outer_classname = "MessagingServiceInternal";
 
-option go_package = "github.com/Kotlang/notificationGo/generated/notification";
+option go_package = "github.com/Kotlang/notificationGo/generated";
 
 package notification;
 
+// All messages sent and recieved are saved in the database in the form of Message
+// Template is used to structure the message which is then stored in form of string.
+// Note: Only the variables are passed to the messaging service provider 
 service MessagingService {
 
-  // Sends common message to multiple recipients
+  // Sends common message to multiple recipients or single recipient
   rpc BroadcastMessage (MesssageRequest) returns (StatusResponse);
 
-  // Supports sending unique messages to multiple recipients
+  // Supports sending unique messages to multiple recipients or single recipient
   rpc SendUniqueMessage (UniqueMessageRequest) returns (StatusResponse);
+
+  // Get the chat history of a user
+  rpc GetChatHistory (IdRequest) returns (ChatHistory);
 
   // Register a new messaging template, these templates can be used as blueprints for sending messages 
   // and UI rendering in admin panel
-  rpc RegisterMessagingTemplate (RegisterMessagingTemplateRequest) returns (StatusResponse);
+  rpc RegisterMessagingTemplate (MessagingTemplate) returns (StatusResponse);
   rpc GetMessagingTemplateById (IdRequest) returns (MessagingTemplate);
 }
 
@@ -26,6 +32,12 @@ enum MediaType {
   image = 0;
   video = 1;
   audio = 2;
+}
+
+message MediaParameters {
+  MediaType mediaType = 1;
+  string link = 2;
+  string filename = 3;
 }
 
 message IdRequest {
@@ -36,20 +48,11 @@ message StatusResponse {
   string status = 1;
 }
 
-message MediaParameters {
-  MediaType mediaType = 1;
-  string link = 2;
-  string filename = 3;
-}
-
+// Templates are for validation and rendering in admin panel 
+// The templateId must be the id provided by the service provider (for eg: textlocal)
+// MediaParameters is used to send media files like images, videos, audio
+// templateParameters map contains the variables that are used in the template
 message MessagingTemplate {
-  string templateId = 1;
-  string templateName = 2;
-  MediaParameters mediaParameters = 3;
-  map<string, string> templateParameters = 4;
-}
-
-message RegisterMessagingTemplateRequest {
   string templateId = 1;
   string templateName = 2;
   MediaParameters mediaParameters = 3;
@@ -69,4 +72,17 @@ message MesssageRequest {
   map<string, string> templateParameters = 2;
   MediaParameters mediaParameters = 3;
   repeated string recipientPhoneNumber = 4;
+}
+
+message ChatHistory {
+  repeated Message messages = 1;
+}
+
+message Message {
+  string messageId = 1;
+  string senderId = 2;
+  string recipientId = 3;
+  string message = 4;
+  string status = 5;
+  string createdOn = 6;
 }
