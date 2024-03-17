@@ -19,9 +19,6 @@ service MessagingService {
   // Supports sending unique messages to multiple recipients or single recipient
   rpc SendUniqueMessage (UniqueMessageRequest) returns (StatusResponse);
 
-  // Get the chat history of a user
-  rpc GetChatHistory (IdRequest) returns (ChatHistory);
-
   // Register a new messaging template, these templates can be used as blueprints for sending messages 
   // and UI rendering in admin panel
   rpc RegisterMessagingTemplate (MessagingTemplate) returns (StatusResponse);
@@ -34,18 +31,55 @@ enum MediaType {
   audio = 2;
 }
 
+enum Category {
+  AUTHENTICATION = 0;
+  MARKETING = 1;
+  UTILITY = 2;
+}
+
+enum ButtonType {
+  None = 1;
+  CallToAction = 2;
+  QuickReply = 3;
+}
+
+// Urls can be static or dynamic, dynamic urls are used to pass parameters to the url
+message Url {
+  enum urlType {
+    static = 0;
+    dynamic = 1;
+  }
+  string link = 1;
+  map<string, string> urlParameters = 2;
+}
+
+// CallToActionButtons are of two types, callPhoneNumber and visitWebsite. 
+message CallToActionButtons {
+  enum actionType {
+    callPhoneNumber = 0;
+    visitWebsite = 1;
+  }
+  string text = 2;
+  string phoneNumber = 3;
+  Url url = 4;
+}
+
+// QuickReplyButtons are used to send quick replies by the user
+message QuickReplyButtons {
+  string text = 1;
+}
+
+message Button {
+  repeated CallToActionButtons callToActionButtons = 1;
+  repeated QuickReplyButtons quickReplyButtons = 2;
+}
+
+// The header can be either text or media, if it is media then the mediaParameters should be used
+
 message MediaParameters {
   MediaType mediaType = 1;
   string link = 2;
   string filename = 3;
-}
-
-message IdRequest {
-  string id = 1;
-}
-
-message StatusResponse {
-  string status = 1;
 }
 
 // Templates are for validation and rendering in admin panel 
@@ -56,7 +90,15 @@ message MessagingTemplate {
   string templateId = 1;
   string templateName = 2;
   MediaParameters mediaParameters = 3;
-  map<string, string> templateParameters = 4;
+  string header = 4;
+  map<strig, string> HeaderParameters = 5;
+  string body = 6;
+  map<string, string> BodyParameters = 7;
+  string footer = 8;
+  Category category = 9;
+  string wabaId = 10; // WhatsApp Business Account ID
+  ButtonType buttonType = 11;
+  Button buttons = 12;
 }
 
 // The UniqueMessageRequest is used to send unique messages to multiple recipients
@@ -69,20 +111,18 @@ message UniqueMessageRequest {
 // The templateParameters are variables that are used in the template
 message MesssageRequest {
   string templateId = 1;
-  map<string, string> templateParameters = 2;
-  MediaParameters mediaParameters = 3;
-  repeated string recipientPhoneNumber = 4;
+  map<string, string> HeaderParameters = 2;
+  map<string, string> BodyParameters = 3;
+  map<string, string> ButtonParameters = 4;  // for dynamic urls
+  MediaParameters mediaParameters = 5;
+  repeated string recipientPhoneNumber = 6;
+  string wabaid = 7; // WhatsApp Business Account ID
 }
 
-message ChatHistory {
-  repeated Message messages = 1;
+message IdRequest {
+  string id = 1;
 }
 
-message Message {
-  string messageId = 1;
-  string senderId = 2;
-  string recipientId = 3;
-  string message = 4;
-  string status = 5;
-  string createdOn = 6;
+message StatusResponse {
+  string status = 1;
 }
