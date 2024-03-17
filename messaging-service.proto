@@ -38,27 +38,31 @@ enum Category {
 }
 
 enum ButtonType {
-  None = 1;
-  CallToAction = 2;
-  QuickReply = 3;
+  None = 0;
+  CallToAction = 1;
+  QuickReply = 2;
+}
+
+enum ActionType {
+  callPhoneNumber = 0;
+  visitWebsite = 1;
+}
+
+enum UrlType {
+  static = 0;
+  dynamic = 1;
 }
 
 // Urls can be static or dynamic, dynamic urls are used to pass parameters to the url
 message Url {
-  enum urlType {
-    static = 0;
-    dynamic = 1;
-  }
-  string link = 1;
-  map<string, string> urlParameters = 2;
+  UrlType urlType = 1;
+  string link = 2;
+  map<string, string> urlParameters = 3;
 }
 
 // CallToActionButtons are of two types, callPhoneNumber and visitWebsite. 
 message CallToActionButtons {
-  enum actionType {
-    callPhoneNumber = 0;
-    visitWebsite = 1;
-  }
+  ActionType actionType = 1;
   string text = 2;
   string phoneNumber = 3;
   Url url = 4;
@@ -91,7 +95,7 @@ message MessagingTemplate {
   string templateName = 2;
   MediaParameters mediaParameters = 3;
   string header = 4;
-  map<strig, string> HeaderParameters = 5;
+  map<string, string> HeaderParameters = 5;
   string body = 6;
   map<string, string> BodyParameters = 7;
   string footer = 8;
