@@ -22,7 +22,7 @@ service MessagingService {
   // Register a new messaging template, these templates can be used as blueprints for sending messages 
   // and UI rendering in admin panel
   rpc RegisterMessagingTemplate (MessagingTemplate) returns (StatusResponse);
-  rpc GetMessagingTemplateById (IdRequest) returns (MessagingTemplate);
+  rpc FetchMessagingTemplates (FetchTemplateRequest) returns (MessagingTemplateList);
 }
 
 enum MediaType {
@@ -121,12 +121,21 @@ message MesssageRequest {
   MediaParameters mediaParameters = 5;
   repeated string recipientPhoneNumber = 6;
   string wabaid = 7; // WhatsApp Business Account ID
-}
-
-message IdRequest {
-  string id = 1;
+  string preview = 8; // The message preview 
 }
 
 message StatusResponse {
   string status = 1;
+}
+
+message MessagingTemplateList {
+  repeated MessagingTemplate templates = 1;
+  int32 totalCount = 2;
+}
+
+message FetchTemplateRequest {
+  string templateId = 1;
+  string templateName = 2;
+  int32 pageNumber = 3;
+  int32 pageSize = 4;
 }
