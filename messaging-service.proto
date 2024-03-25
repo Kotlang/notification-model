@@ -1,0 +1,184 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.kotlang.notification";
+option java_outer_classname = "MessagingServiceInternal";
+
+option go_package = "github.com/Kotlang/notificationGo/generated";
+
+package notification;
+
+// All messages sent and recieved are saved in the database in the form of Message
+// Template is used to structure the message which is then stored in form of string.
+// Note: Only the variables are passed to the messaging service provider 
+service MessagingService {
+
+  // Sends common message to multiple recipients or single recipient
+  rpc BroadcastMessage (MesssageRequest) returns (StatusResponse);
+
+  // Fetch Messages
+  rpc FetchMessages (FetchMessageRequest) returns (MessageList);
+
+  // Supports sending unique messages to multiple recipients or single recipient
+  rpc SendUniqueMessage (UniqueMessageRequest) returns (StatusResponse);
+
+  // Register a new messaging template, these templates can be used as blueprints for sending messages 
+  // and UI rendering in admin panel
+  rpc RegisterMessagingTemplate (MessagingTemplate) returns (StatusResponse);
+  rpc FetchMessagingTemplates (FetchTemplateRequest) returns (MessagingTemplateList);
+}
+
+enum MediaType {
+  image = 0;
+  video = 1;
+  audio = 2;
+}
+
+enum Category {
+  AUTHENTICATION = 0;
+  MARKETING = 1;
+  UTILITY = 2;
+}
+
+enum ButtonType {
+  None = 0;
+  CallToAction = 1;
+  QuickReply = 2;
+}
+
+enum ActionType {
+  callPhoneNumber = 0;
+  visitWebsite = 1;
+}
+
+enum UrlType {
+  static = 0;
+  dynamic = 1;
+}
+
+// Urls can be static or dynamic, dynamic urls are used to pass parameters to the url
+message Url {
+  UrlType urlType = 1;
+  string link = 2;
+  map<string, string> urlParameters = 3;
+}
+
+// CallToActionButtons are of two types, callPhoneNumber and visitWebsite. 
+message CallToActionButtons {
+  ActionType actionType = 1;
+  string text = 2;
+  string phoneNumber = 3;
+  Url url = 4;
+}
+
+// QuickReplyButtons are used to send quick replies by the user
+message QuickReplyButtons {
+  string text = 1;
+}
+
+message Button {
+  repeated CallToActionButtons callToActionButtons = 1;
+  repeated QuickReplyButtons quickReplyButtons = 2;
+}
+
+// The header can be either text or media, if it is media then the mediaParameters should be used
+
+message MediaParameters {
+  MediaType mediaType = 1;
+  string link = 2;
+  string filename = 3;
+}
+
+// Templates are for validation and rendering in admin panel 
+// The templateId must be the id provided by the service provider (for eg: textlocal)
+// MediaParameters is used to send media files like images, videos, audio
+// templateParameters map contains the variables that are used in the template
+message MessagingTemplate {
+  string templateId = 1;
+  string templateName = 2;
+  MediaParameters mediaParameters = 3;
+  string header = 4;
+  map<string, string> HeaderParameters = 5;
+  string body = 6;
+  map<string, string> BodyParameters = 7;
+  string footer = 8;
+  Category category = 9;
+  string wabaId = 10; // WhatsApp Business Account ID
+  ButtonType buttonType = 11;
+  Button buttons = 12;
+}
+
+// The UniqueMessageRequest is used to send unique messages to multiple recipients
+// The messages are sent to the recipients in the order they are added to the request
+message UniqueMessageRequest {
+  repeated MesssageRequest messages = 1;
+}
+
+// ScheduleInfo is used to schedule messages to be sent at a later time
+message ScheduleInfo {
+  bool isScheduled = 1;
+  int64 scheduledTime = 2;
+}
+
+// The templateParameters and mediaParameters are merged into a single map named parameters in backend
+// The templateParameters are variables that are used in the template
+message MesssageRequest {
+  string templateId = 1;
+  map<string, string> HeaderParameters = 2;
+  map<string, string> BodyParameters = 3;
+  map<string, string> ButtonParameters = 4;  // for dynamic urls
+  MediaParameters mediaParameters = 5;
+  repeated string recipientPhoneNumber = 6;
+  string wabaid = 7; // WhatsApp Business Account ID
+  string preview = 8; // The message preview
+  ScheduleInfo scheduleInfo = 9;
+}
+
+message StatusResponse {
+  string status = 1;
+}
+
+message MessagingTemplateList {
+  repeated MessagingTemplate templates = 1;
+  int32 totalCount = 2;
+}
+
+message FetchTemplateRequest {
+  string templateId = 1;
+  string templateName = 2;
+  int32 pageNumber = 3;
+  int32 pageSize = 4;
+}
+
+message MessageProto {
+  string messageId = 1;
+  string sender = 2;
+  repeated string recipients = 3;
+  string message = 4;
+  repeated string recievedBy = 5;
+  repeated string readBy = 6;
+  repeated string respondedBy = 7;
+  repeated string failedRecipients = 8;
+  int64 createdOn = 9;
+  ScheduleInfo scheduleInfo = 10;
+  MediaParameters mediaParameters = 11;
+  map<string, string> buttons = 12;
+  string transactionId = 13;
+}
+
+message MessageList {
+  repeated MessageProto messages = 1;
+  int32 totalCount = 2;
+}
+
+message MessageFilters {
+  string messageId = 1;
+  string sender = 2;
+  string transactionId = 3;
+}
+
+message FetchMessageRequest {
+  MessageFilters filters = 1;
+  int32 pageNumber = 2;
+  int32 pageSize = 3;
+}
