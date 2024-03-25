@@ -16,6 +16,9 @@ service MessagingService {
   // Sends common message to multiple recipients or single recipient
   rpc BroadcastMessage (MesssageRequest) returns (StatusResponse);
 
+  // Fetch Messages
+  rpc FetchMessages (FetchMessageRequest) returns (MessageList);
+
   // Supports sending unique messages to multiple recipients or single recipient
   rpc SendUniqueMessage (UniqueMessageRequest) returns (StatusResponse);
 
@@ -145,4 +148,37 @@ message FetchTemplateRequest {
   string templateName = 2;
   int32 pageNumber = 3;
   int32 pageSize = 4;
+}
+
+message MessageProto {
+  string messageId = 1;
+  string sender = 2;
+  repeated string recipients = 3;
+  string message = 4;
+  repeated string recievedBy = 5;
+  repeated string readBy = 6;
+  repeated string respondedBy = 7;
+  repeated string failedRecipients = 8;
+  int64 createdOn = 9;
+  ScheduleInfo scheduleInfo = 10;
+  MediaParameters mediaParameters = 11;
+  map<string, string> buttons = 12;
+  string transactionId = 13;
+}
+
+message MessageList {
+  repeated MessageProto messages = 1;
+  int32 totalCount = 2;
+}
+
+message MessageFilters {
+  string messageId = 1;
+  string sender = 2;
+  string transactionId = 3;
+}
+
+message FetchMessageRequest {
+  MessageFilters filters = 1;
+  int32 pageNumber = 2;
+  int32 pageSize = 3;
 }
