@@ -30,8 +30,8 @@ service MessagingService {
 
 enum MediaType {
   image = 0;
-  video = 1;
-  audio = 2;
+  document = 1;
+  video = 2;
 }
 
 enum Category {
