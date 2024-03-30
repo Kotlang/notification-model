@@ -20,18 +20,23 @@ service MessagingService {
   rpc FetchMessages (FetchMessageRequest) returns (MessageList);
 
   // Supports sending unique messages to multiple recipients or single recipient
-  rpc SendUniqueMessage (UniqueMessageRequest) returns (StatusResponse);
+  rpc SendUniqueMessage (UniqueMessageRequest) returns (StatusResponse);  // not implemented
 
   // Register a new messaging template, these templates can be used as blueprints for sending messages 
   // and UI rendering in admin panel
   rpc RegisterMessagingTemplate (MessagingTemplate) returns (StatusResponse);
   rpc FetchMessagingTemplates (FetchTemplateRequest) returns (MessagingTemplateList);
+  rpc DeleteMessagingTemplate (IdRequest) returns (StatusResponse);
+  rpc UpdateMessagingTemplate (MessagingTemplate) returns (StatusResponse); // not implemented
+
+  // Upload media files
+  rpc GetMessageMediaUploadUrl (MediaUploadRequest) returns (MediaUploadUrl);
 }
 
 enum MediaType {
   image = 0;
-  video = 1;
-  audio = 2;
+  document = 1;
+  video = 2;
 }
 
 enum Category {
@@ -54,6 +59,10 @@ enum ActionType {
 enum UrlType {
   static = 0;
   dynamic = 1;
+}
+
+message IdRequest {
+  string id = 1;
 }
 
 // Urls can be static or dynamic, dynamic urls are used to pass parameters to the url
@@ -181,4 +190,14 @@ message FetchMessageRequest {
   MessageFilters filters = 1;
   int32 pageNumber = 2;
   int32 pageSize = 3;
+}
+
+message MediaUploadRequest {
+  // Allowed extensions: jpg, jpeg, png, mp4, webmp, pdf, doc, docx
+  string mediaExtension = 1;
+}
+
+message MediaUploadUrl {
+  string uploadUrl = 1;
+  string mediaUrl = 2;
 }
