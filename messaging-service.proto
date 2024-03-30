@@ -26,6 +26,8 @@ service MessagingService {
   // and UI rendering in admin panel
   rpc RegisterMessagingTemplate (MessagingTemplate) returns (StatusResponse);
   rpc FetchMessagingTemplates (FetchTemplateRequest) returns (MessagingTemplateList);
+  rpc DeleteMessagingTemplate (IdRequest) returns (StatusResponse);
+  rpc UpdateMessagingTemplate (MessagingTemplate) returns (StatusResponse);
 
   // Upload media files
   rpc GetMessageMediaUploadUrl (MediaUploadRequest) returns (MediaUploadUrl);
@@ -57,6 +59,10 @@ enum ActionType {
 enum UrlType {
   static = 0;
   dynamic = 1;
+}
+
+message IdRequest {
+  string id = 1;
 }
 
 // Urls can be static or dynamic, dynamic urls are used to pass parameters to the url
