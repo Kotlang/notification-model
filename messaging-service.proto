@@ -20,14 +20,14 @@ service MessagingService {
   rpc FetchMessages (FetchMessageRequest) returns (MessageList);
 
   // Supports sending unique messages to multiple recipients or single recipient
-  rpc SendUniqueMessage (UniqueMessageRequest) returns (StatusResponse);
+  rpc SendUniqueMessage (UniqueMessageRequest) returns (StatusResponse);  // not implemented
 
   // Register a new messaging template, these templates can be used as blueprints for sending messages 
   // and UI rendering in admin panel
   rpc RegisterMessagingTemplate (MessagingTemplate) returns (StatusResponse);
   rpc FetchMessagingTemplates (FetchTemplateRequest) returns (MessagingTemplateList);
   rpc DeleteMessagingTemplate (IdRequest) returns (StatusResponse);
-  rpc UpdateMessagingTemplate (MessagingTemplate) returns (StatusResponse);
+  rpc UpdateMessagingTemplate (MessagingTemplate) returns (StatusResponse); // not implemented
 
   // Upload media files
   rpc GetMessageMediaUploadUrl (MediaUploadRequest) returns (MediaUploadUrl);
