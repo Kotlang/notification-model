@@ -26,12 +26,15 @@ service MessagingService {
   // and UI rendering in admin panel
   rpc RegisterMessagingTemplate (MessagingTemplate) returns (StatusResponse);
   rpc FetchMessagingTemplates (FetchTemplateRequest) returns (MessagingTemplateList);
+
+  // Upload media files
+  rpc GetMessageMediaUploadUrl (MediaUploadRequest) returns (MediaUploadUrl);
 }
 
 enum MediaType {
   image = 0;
-  video = 1;
-  audio = 2;
+  document = 1;
+  video = 2;
 }
 
 enum Category {
@@ -181,4 +184,14 @@ message FetchMessageRequest {
   MessageFilters filters = 1;
   int32 pageNumber = 2;
   int32 pageSize = 3;
+}
+
+message MediaUploadRequest {
+  // Allowed extensions: jpg, jpeg, png, mp4, webmp, pdf, doc, docx
+  string mediaExtension = 1;
+}
+
+message MediaUploadUrl {
+  string uploadUrl = 1;
+  string mediaUrl = 2;
 }
