@@ -57,8 +57,8 @@ enum ActionType {
 }
 
 enum UrlType {
-  static = 0;
-  dynamic = 1;
+  staticUrl = 0;
+  dynamicUrl = 1;
 }
 
 message IdRequest {
