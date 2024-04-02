@@ -18,6 +18,7 @@ service MessagingService {
 
   // Fetch Messages
   rpc FetchMessages (FetchMessageRequest) returns (MessageList);
+  rpc FetchMessageById (IdRequest) returns (MessageProto);
 
   // Supports sending unique messages to multiple recipients or single recipient
   rpc SendUniqueMessage (UniqueMessageRequest) returns (StatusResponse);  // not implemented
