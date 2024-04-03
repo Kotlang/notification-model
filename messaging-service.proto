@@ -18,6 +18,7 @@ service MessagingService {
 
   // Fetch Messages
   rpc FetchMessages (FetchMessageRequest) returns (MessageList);
+  rpc FetchMessageById (IdRequest) returns (MessageProto);
 
   // Supports sending unique messages to multiple recipients or single recipient
   rpc SendUniqueMessage (UniqueMessageRequest) returns (StatusResponse);  // not implemented
@@ -139,7 +140,6 @@ message MesssageRequest {
   MediaParameters mediaParameters = 5;
   repeated string recipientPhoneNumber = 6;
   string wabaid = 7; // WhatsApp Business Account ID
-  string preview = 8; // The message preview
   ScheduleInfo scheduleInfo = 9;
 }
 
@@ -161,18 +161,20 @@ message FetchTemplateRequest {
 
 message MessageProto {
   string messageId = 1;
-  string sender = 2;
-  repeated string recipients = 3;
-  string message = 4;
+  string templateId = 2;
+  string sender = 3;
+  repeated string recipients = 4;
   repeated string recievedBy = 5;
   repeated string readBy = 6;
   repeated string respondedBy = 7;
   repeated string failedRecipients = 8;
   int64 createdOn = 9;
   ScheduleInfo scheduleInfo = 10;
-  MediaParameters mediaParameters = 11;
-  map<string, string> buttons = 12;
-  string transactionId = 13;
+  map<string, string> headerParameters = 11;
+  MediaParameters mediaParameters = 12;
+  map<string, string> bodyParameters = 13;
+  map<string, string> buttons = 14;
+  string transactionId = 15;
 }
 
 message MessageList {
