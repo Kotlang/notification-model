@@ -159,6 +159,10 @@ message FetchTemplateRequest {
   int32 pageSize = 4;
 }
 
+message Reply {
+  repeated string replies = 2;
+}
+
 message MessageProto {
   string messageId = 1;
   string templateId = 2;
@@ -166,7 +170,7 @@ message MessageProto {
   repeated string recipients = 4;
   repeated string recievedBy = 5;
   repeated string readBy = 6;
-  repeated string respondedBy = 7;
+  map<string, Reply> responses = 7;
   repeated string failedRecipients = 8;
   int64 createdOn = 9;
   ScheduleInfo scheduleInfo = 10;
